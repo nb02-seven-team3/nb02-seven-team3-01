@@ -18,9 +18,19 @@ const nextConfig: NextConfig = {
         port: '3001',
       },
       {
-        protocol: 'https',
-        hostname: 'sprint-be-project.s3.ap-northeast-2.amazonaws.com',
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
       },
+      {
+        protocol: 'https',
+        hostname: 'sprint-be-project.s3.ap-northeast-2.amazonaws.com',        
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',        
+      },
+
     ],
   },
 };
