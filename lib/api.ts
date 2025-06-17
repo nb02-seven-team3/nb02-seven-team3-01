@@ -26,8 +26,7 @@ const logError = (error: unknown) => {
     const response = error.response;
     if (response) {
       console.error(
-        `[프론트] ${response.config.method?.toUpperCase()} ${
-          response.config.url
+        `[프론트] ${response.config.method?.toUpperCase()} ${response.config.url
         } ${response.status}`
       );
       console.error(response.data);
@@ -209,6 +208,23 @@ export const getRanks = async (
   }
 };
 
+// export const uploadImage = async (
+//   files: File[]
+// ): Promise<{
+//   urls: string[];
+// }> => {
+//   try {
+//     const formData = new FormData();
+//     files.forEach((file) => formData.append('files', file));
+//     const response = await axios.postForm('/images', formData);
+//     const { urls } = response.data;
+//     return { urls };
+//   } catch (error) {
+//     logError(error);
+//     throw error;
+//   }
+// };
+
 export const uploadImage = async (
   files: File[]
 ): Promise<{
@@ -217,7 +233,13 @@ export const uploadImage = async (
   try {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
-    const response = await axios.postForm('/images', formData);
+
+    const response = await axios.post('/images', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     const { urls } = response.data;
     return { urls };
   } catch (error) {
