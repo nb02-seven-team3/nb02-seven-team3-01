@@ -38,21 +38,10 @@ export const getGroups = async (
   query: PaginationQuery
 ): Promise<PaginationResponse<Group>> => {
   try {
-    // page → offset 변환
-    const offset = ((query.page ?? 1) - 1) * (query.limit ?? 6);
-
-    // order와 orderBy 서버가 기대하는 형태로 변경
-    // 서버에서는 orderBy: 'createdAt', 'likeCount', 'participantCount' 중 하나,
-    // order는 항상 desc 고정(현재 서버코드에서 오름차순 미지원 상태면)
-    const orderBy = query.orderBy ?? 'createdAt';
-
     const response = await axios.get('/groups', {
       params: {
-        offset,
-        limit: query.limit ?? 6,
-        order: orderBy, // 서버가 orderBy로 기대하는 값을 여기에 넣음
-        // search는 서버에서 name으로 검색하니까 search를 name으로 매핑
-        name: query.search ?? '',
+        ...DEFAULT_GROUPS_PAGINATION_QUERY,
+        ...query,
       },
     });
 
