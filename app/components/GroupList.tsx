@@ -86,34 +86,44 @@ const GroupList = ({
 }) => {
   const [groups, setGroups] = useState<Group[]>(initialValues);
   const [page, setPage] = useState(paginationQuery?.page ?? 1);
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  });
+  const [groupIds, setGroupIds] = useState<Set<number>>(new Set(initialValues.map(g => g.id)));
+  const { ref, inView } = useInView({ threshold: 0.1 });
+  const [hasNext, setHasNext] = useState(groups.length < total);
 
-  const loadMore = useCallback(
-    async () => {
-      const { data: next } = await getGroupsAction({
-        ...paginationQuery,
-        page: page + 1,
-      });
-      setGroups((prev) => [...prev, ...next]);
-      setPage(page + 1);
-    },
-    [paginationQuery, page]
-  );
+  const loadMore = useCallback(async () => {
+    const { data: next } = await getGroupsAction({
+      ...paginationQuery,
+      page: page + 1,
+    });
+
+    const filtered = next.filter(g => !groupIds.has(g.id));
+
+    if (filtered.length === 0) {
+      setHasNext(false); // 더 이상 가져올 게 없음
+      return;
+    }
+
+    setGroups(prev => [...prev, ...filtered]);
+    setGroupIds(prev => {
+      const newSet = new Set(prev);
+      filtered.forEach(g => newSet.add(g.id));
+      return newSet;
+    });
+    setPage(prev => prev + 1);
+  }, [paginationQuery, page, groupIds]);
 
   useEffect(() => {
-    if (inView) {
+    if (inView && hasNext) {
       loadMore();
     }
-  }, [inView, loadMore]);
+  }, [inView, hasNext, loadMore]);
 
   useEffect(() => {
     setGroups(initialValues);
+    setGroupIds(new Set(initialValues.map(g => g.id)));
     setPage(paginationQuery?.page ?? 1);
-  }, [initialValues, paginationQuery]);
-
-  const hasNext = groups.length < total;
+    setHasNext(initialValues.length < total);
+  }, [initialValues, paginationQuery, total]);
 
   return (
     <div className={cx('container')}>
