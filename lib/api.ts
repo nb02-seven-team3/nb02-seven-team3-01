@@ -64,6 +64,7 @@ export const getGroups = async (
   }
 };
 
+
 export const getGroup = async (groupId: number): Promise<Group> => {
   try {
     const response = await axios.get(`/groups/${groupId}`);
