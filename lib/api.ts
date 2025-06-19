@@ -228,6 +228,7 @@ export const uploadImage = async (
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      withCredentials: true,
     });
 
     const { urls } = response.data;
