@@ -24,12 +24,17 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'sprint-be-project.s3.ap-northeast-2.amazonaws.com',        
+        hostname: 'sprint-be-project.s3.ap-northeast-2.amazonaws.com',
       },
       {
         protocol: 'https',
-        hostname: 'example.com',        
+        hostname: 'example.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        pathname: '**',
+      }
 
     ],
   },
